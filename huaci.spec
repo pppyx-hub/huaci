@@ -2,47 +2,88 @@
 """
 PyInstaller 打包配置
 ====================
-    python -m PyInstaller huaci.spec --noconfirm
+    python -m PyInstaller huaci.spec --noconfirm --clean
 
-产物：dist/划词翻译助手/  （onedir，绿色版）
+产物：dist/划词翻译助手/
 
-为什么不用 onefile：单文件每次启动都要把 260MB 解压到临时目录，
-划词工具要求「选中即弹」，那几秒延迟不能接受。onedir 拷走整个文件夹即可。
+【三个踩过的坑，都写在这里防止再犯】
 
-模型（ai_engine/，1.1GB）不打包 —— 没有模型时 AI 功能自动降级，
-其余（划词、词库、练习、发音、Obsidian）全部正常。
-想要 AI 就把 ai_engine 目录放到 exe 旁边。
+1. 不打包 PySide6
+   PySide6 + WebEngine 在 Python 3.14 上会让依赖分析阶段卡死（实测 15 分钟无进展）。
+   词库界面改用「进程内起本地服务 + Edge --app 窗口」，体验接近且体积小一半。
+
+2. 不能 glob Library/bin/*.dll
+   anaconda 那个目录有 371 个 DLL、共 1.1GB，包含 Qt6WebEngineCore(200MB)、
+   Intel MKL 全家桶(250MB)、ICU 数据(31MB) —— 全带上包会变成 1.1GB。
+   只精确列运行时真正需要的 5 个。
+
+3. 不打包用户数据
+   vocab.db / obsidian.json / audio_cache / data/ 全部不含。
+   发布版是全新的空库，首次运行由 vault.init() 自动建表。
 """
+
+import glob
+import os
+import sys
+import sysconfig
+
+_lib_bin = os.path.join(sys.base_prefix, "Library", "bin")
+_dlls = os.path.join(sys.base_prefix, "DLLs")
+
+# 运行时真正需要的非标准 DLL（都已验证：缺一个就起不来）
+_NEED = [
+    ("ffi.dll", [_lib_bin, _dlls]),        # _ctypes
+    ("tcl86t.dll", [_lib_bin]),            # _tkinter
+    ("tk86t.dll", [_lib_bin]),             # _tkinter
+    ("zlib.dll", [_lib_bin]),              # tcl / sqlite
+    ("sqlite3.dll", [_lib_bin]),           # _sqlite3
+]
+_extra = []
+for _name, _dirs in _NEED:
+    for _d in _dirs:
+        _f = os.path.join(_d, _name)
+        if os.path.isfile(_f):
+            _extra.append((_f, "."))
+            break
+
+# tkinter 还需要 Tcl 的脚本库，否则启动报 "Can't find a usable init.tcl"
+_tcl_datas = []
+_lib = os.path.join(sys.base_prefix, "Library", "lib")
+for _n in ("tcl8.6", "tk8.6"):
+    _d = os.path.join(_lib, _n)
+    if os.path.isdir(_d):
+        _tcl_datas.append((_d, os.path.join("tcl", _n)))
 
 a = Analysis(
     ['huaci.py'],
     pathex=[],
-    binaries=[],
+    binaries=_extra,
     datas=[
-        ('web', 'web'),                 # 词库前端页面
-        ('ecdict.db', '.'),             # 词典（72MB，免用户下载）
-        ('lemma.en.txt', '.'),          # 词形还原表
-        ('synonyms.json', '.'),         # 雅思同义替换组
+        ('web', 'web'),
+        ('ecdict.db', '.'),
+        ('lemma.en.txt', '.'),
+        ('synonyms.json', '.'),
         ('huaci.ico', '.'),
-    ],
+    ] + _tcl_datas,
     hiddenimports=[
-        'PySide6.QtWebEngineCore',
-        'PySide6.QtWebEngineWidgets',
-        'PySide6.QtWebChannel',
-        'PySide6.QtNetwork',
-        'PySide6.QtPrintSupport',
         'flask',
         'werkzeug.serving',
-        'lxml',                         # obsidian 导出可能用到
+        'werkzeug.middleware.proxy_fix',
+        'sqlite3',
+        'tkinter',
+        'tkinter.font',
+        'tkinter.ttk',
     ],
     hookspath=[],
     runtime_hooks=[],
     excludes=[
+        'PySide6', 'PySide2', 'PyQt5', 'PyQt6', 'shiboken6',
         'ai_engine',
-        'PyQt5', 'PyQt6', 'PySide2',
-        'matplotlib', 'scipy', 'pandas', 'numpy.testing',
+        'matplotlib', 'scipy', 'pandas', 'numpy',
+        'mkl', 'mkl_service',
+        'grpc', 'google.protobuf',
         'pytest', 'IPython', 'notebook', 'jupyter',
-        'tkinter.test', 'test', 'unittest',
+        'tkinter.test', 'test', 'unittest', 'pydoc_data',
     ],
     noarchive=False,
 )
@@ -58,8 +99,8 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=False,                          # UPX 会触发杀软误报
-    console=True,                       # 保留黑窗口：显示快捷键提示和错误
+    upx=False,
+    console=True,
     disable_windowed_traceback=False,
     icon='huaci.ico',
 )

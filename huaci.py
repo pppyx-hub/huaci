@@ -1099,6 +1099,61 @@ def _note_worker():
             time.sleep(30)
 
 
+# 词库界面的本地服务（进程内只起一次）
+_VAULT = {"port": 0}
+
+
+def _ensure_vault_server():
+    """起本地 Web 服务并返回端口。
+
+    打包成 exe 后不带 Qt（PySide6 在 Python 3.14 上打包会卡死），
+    词库界面交给系统浏览器，用 Edge 的 --app 模式打开就是无地址栏的独立窗口。
+    """
+    if _VAULT.get("port"):
+        return _VAULT["port"]
+    import bridge
+    from werkzeug.serving import make_server
+    srv = make_server("127.0.0.1", 0, bridge.create_server(), threaded=True)
+    port = srv.server_port
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    _VAULT["port"] = port
+    _VAULT["srv"] = srv
+    return port
+
+
+def _edge_exe():
+    """找 Edge 可执行文件，找不到返回 None。"""
+    cands = [
+        os.path.join(os.environ.get("ProgramFiles(x86)", r"C:/Program Files (x86)"),
+                     "Microsoft", "Edge", "Application", "msedge.exe"),
+        os.path.join(os.environ.get("ProgramFiles", r"C:/Program Files"),
+                     "Microsoft", "Edge", "Application", "msedge.exe"),
+        os.path.join(os.environ.get("LOCALAPPDATA", ""),
+                     "Microsoft", "Edge", "Application", "msedge.exe"),
+    ]
+    for c in cands:
+        if c and os.path.isfile(c):
+            return c
+    return None
+
+
+def open_vault_window():
+    """打开词库窗口：有 Edge 用 --app（独立窗口），否则退回默认浏览器。"""
+    port = _ensure_vault_server()
+    url = "http://127.0.0.1:%d/" % port
+    edge = _edge_exe()
+    if edge:
+        try:
+            flags = getattr(subprocess, "CREATE_NO_WINDOW", 0) if os.name == "nt" else 0
+            subprocess.Popen([edge, "--app=%s" % url, "--window-size=1280,820"],
+                             creationflags=flags, close_fds=True)
+            return
+        except Exception:
+            pass
+    import webbrowser
+    webbrowser.open(url)
+
+
 class App:
     def __init__(self):
         self.root = tk.Tk()
@@ -1342,11 +1397,21 @@ class App:
     _vault_ts = 0.0    # 上次发起启动的时间，用来挡重复点击
 
     def open_main(self, filter_key="all"):
-        """打开词库界面（独立进程，Qt + WebEngine 渲染）。
+        """打开词库界面。
 
-        已经有实例就把老窗口切到前台，不再开新的 ——
-        多开几个实例会各占一个端口，最后操作到半死的老窗口。
+        开发态用 Qt 独立窗口（app.py），排版最精细；
+        打包态改用本地服务 + Edge --app 窗口 —— PySide6 在 Python 3.14 上
+        无法用 PyInstaller 打包（依赖分析阶段会卡死），不能把用户卡在门外。
         """
+        if getattr(sys, "frozen", False):
+            try:
+                if getattr(self, "ball", None):
+                    self.ball.flash("打开词库")
+                open_vault_window()
+            except Exception as e:
+                print("  [词库] 打开失败:", e)
+            return
+
         import subprocess
         script = os.path.join(APP_DIR, "app.py")
         try:
@@ -1354,7 +1419,6 @@ class App:
                 return
 
             # 窗口还没出来时又点了一下：忽略，别再开一个进程。
-            # app.py 初始化要 2–3 秒，这段时间重复点会堆积一堆进程。
             import time as _t
             now = _t.time()
             if now - App._vault_ts < 12:
@@ -1366,14 +1430,8 @@ class App:
             if getattr(self, "ball", None):
                 self.ball.flash("启动中")
             flags = getattr(subprocess, "CREATE_NO_WINDOW", 0) if os.name == "nt" else 0
-            # 打包后 app.py 不在磁盘上，用同一个 exe 带 --vault 参数拉起词库窗口
-            if getattr(sys, "frozen", False):
-                cmd = [sys.executable, "--vault"]
-                cwd = os.path.dirname(sys.executable)
-            else:
-                cmd = [sys.executable, script]
-                cwd = APP_DIR
-            subprocess.Popen(cmd, cwd=cwd, creationflags=flags, close_fds=True)
+            subprocess.Popen([sys.executable, script], cwd=APP_DIR,
+                             creationflags=flags, close_fds=True)
         except Exception as e:
             print("  [词库] 启动失败:", e)
 
