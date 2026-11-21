@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>划词翻译助手</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="titlebar">
+  <div class="brand">
+    <span class="logo">译</span>
+    <span class="name">划词翻译助手</span>
+    <span class="status"><i></i>划词中</span>
+  </div>
+  <div class="actions">
+    <button class="add-btn" id="btnAdd">＋ 录入</button>
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
+      </svg>
+      <input placeholder="搜索单词或释义" id="q">
+    </div>
+    <button class="icon" title="最小化">—</button>
+    <button class="icon close" title="关闭">✕</button>
+  </div>
+</header>
+
+<main>
+  <section class="stats">
+    <div class="stat">
+      <span class="bar" style="--c:#60a5fa"></span>
+      <div class="val" style="color:#60a5fa">108</div>
+      <div class="lab">总词数</div>
+    </div>
+    <div class="stat">
+      <span class="bar" style="--c:#fbbf24"></span>
+      <div class="val" style="color:#fbbf24">58</div>
+      <div class="lab">我的生词</div>
+    </div>
+    <div class="stat">
+      <span class="bar" style="--c:#60a5fa"></span>
+      <div class="val" style="color:#60a5fa">40</div>
+      <div class="lab">待复习</div>
+    </div>
+    <div class="stat">
+      <span class="bar" style="--c:#4ade80"></span>
+      <div class="val" style="color:#4ade80">96</div>
+      <div class="lab">今日新增</div>
+    </div>
+  </section>
+
+  <section class="body">
+    <aside class="filters">
+      <button class="filter active"><span>全部</span><em>108</em></button>
+      <button class="filter"><span>★ 我的生词</span><em>58</em></button>
+      <button class="filter"><span>自动记录</span><em>50</em></button>
+      <button class="filter"><span>待复习</span><em>40</em></button>
+      <div class="sep"></div>
+      <button class="filter"><span>雅思</span><em>72</em></button>
+      <button class="filter"><span>学术</span><em>31</em></button>
+      <div class="sep"></div>
+      <button class="filter"><span>常用</span><em>9</em></button>
+      <button class="filter"><span>生僻</span><em>60</em></button>
+      <button class="filter"><span>顽固生词</span><em>14</em></button>
+    </aside>
+
+    <section class="list">
+      <div class="thead">
+        <span>单词</span><span>音标</span><span>释义</span>
+        <span class="c">难度</span><span class="c">考试</span>
+        <span class="c">次数</span><span class="c">最近 ↓</span>
+      </div>
+      <div class="rows" id="rowsBox">
+        <div class="row sel"><span class="w">component</span><span class="ph">/kəmˈpəʊnənt/</span><span class="tr">组件</span><span class="c lv">进阶</span><span class="c ex">雅思</span><span class="c n">1</span><span class="c d">11-11</span></div>
+        <div class="row"><span class="w star">denote</span><span class="ph">/dɪˈnəʊt/</span><span class="tr">表示；意味着</span><span class="c lv">生僻</span><span class="c ex">学术</span><span class="c n">3</span><span class="c d">11-11</span></div>
+        <div class="row"><span class="w">eliminate</span><span class="ph">/ɪˈlɪmɪneɪt/</span><span class="tr">消除；排除</span><span class="c lv">进阶</span><span class="c ex">雅思</span><span class="c n">7</span><span class="c d">11-11</span></div>
+        <div class="row"><span class="w star">empirical</span><span class="ph">/ɪmˈpɪrɪkl/</span><span class="tr">经验主义的</span><span class="c lv">生僻</span><span class="c ex">学术</span><span class="c n">3</span><span class="c d">11-10</span></div>
+        <div class="row"><span class="w">inclusive</span><span class="ph">/ɪnˈkluːsɪv/</span><span class="tr">包容的</span><span class="c lv">进阶</span><span class="c ex">雅思</span><span class="c n">2</span><span class="c d">11-10</span></div>
+        <div class="row"><span class="w">simultaneously</span><span class="ph">/ˌsɪmlˈteɪniəsli/</span><span class="tr">同时地</span><span class="c lv">生僻</span><span class="c ex">学术</span><span class="c n">2</span><span class="c d">11-10</span></div>
+        <div class="row"><span class="w star">sensitivity</span><span class="ph">/ˌsensəˈtɪvəti/</span><span class="tr">敏感性</span><span class="c lv">生僻</span><span class="c ex">雅思</span><span class="c n">4</span><span class="c d">11-09</span></div>
+        <div class="row"><span class="w">transpose</span><span class="ph">/trænsˈpəʊz/</span><span class="tr">转置；调换</span><span class="c lv">生僻</span><span class="c ex">学术</span><span class="c n">2</span><span class="c d">11-09</span></div>
+      </div>
+    </section>
+
+    <aside class="detail">
+      <div class="dt-head">
+        <h2>component</h2>
+        <div class="ph">/kəmˈpəʊnənt/</div>
+        <div class="tags"><span class="t lv">进阶</span><span class="t ex">雅思</span></div>
+      </div>
+      <div class="dt-scroll">
+      <div class="dt-sec">
+        <h4>释义</h4>
+        <p>组件；成分</p>
+      </div>
+      <div class="dt-sec">
+        <h4>同义词</h4>
+        <p><b>adj.</b> constituent</p>
+        <p><b>n.</b> module · element · constituent</p>
+      </div>
+      <div class="dt-sec">
+        <h4>词形</h4>
+        <p>复数：components</p>
+      </div>
+      <div class="dt-sec">
+        <h4>记录</h4>
+        <p class="dim">查询 1 次 · 11-11</p>
+        <p class="dim">来源：Discover community-made UI</p>
+      </div>
+      </div>
+      <div class="dt-actions">
+        <button class="btn primary">★ 加入生词本</button>
+        <div class="row2">
+          <button class="btn">悬浮窗查看</button>
+          <button class="btn danger">删除</button>
+        </div>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<footer class="foot">
+  <span class="hint" id="hint">加载中…</span>
+  <div class="fbtns">
+    <button class="btn" id="btnObsidian">Obsidian</button>
+    <button class="btn">导出</button>
+    <button class="btn primary">练习</button>
+  </div>
+</footer>
+
+
+<div class="modal" id="obModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>连接 Obsidian</h3>
+      <button class="icon" id="obClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="ob-field">
+        <label>Vault 文件夹</label>
+        <div class="ob-pick">
+          <input id="obVault" placeholder="点「浏览」选择你的 obsidian 库文件夹">
+          <button class="btn" id="obBrowse">浏览</button>
+        </div>
+      </div>
+      <div class="ob-field">
+        <label>子文件夹</label>
+        <input id="obFolder" value="Huaci 词库">
+      </div>
+      <div class="ob-note" id="obHint">同步后，在 Obsidian 里用「打开文件夹作为库」选这个路径。</div>
+      <div class="ob-result" id="obResult"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="obCancel">取消</button>
+      <button class="btn primary" id="obSync">立即同步</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" id="chModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>雅思挑战</h3>
+      <button class="icon" id="chClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="ch-meta" id="chMeta">正在准备…</div>
+      <div class="ch-card">
+        <div class="ch-word" id="chWord">—</div>
+        <div class="ch-ph" id="chPh"></div>
+        <div class="ch-tr" id="chTr">先自己回想一下释义</div>
+        <div class="ch-btns">
+          <button class="btn" id="chNo">不认识 · 收入生词本</button>
+          <button class="btn primary" id="chYes">认识</button>
+        </div>
+      </div>
+      <div class="ch-progress" id="chProg"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="chReveal">看释义</button>
+      <button class="btn" id="chNext">下一题</button>
+    </div>
+  </div>
+</div>
+
+<!-- 练习中心 -->
+<div class="modal" id="prModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>练习中心</h3>
+      <button class="icon" id="prClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="pr-grid" id="prGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 选择题 -->
+<div class="modal" id="qzModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="qzTitle">练习</h3>
+      <button class="icon" id="qzClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="qz-word" id="qzWord">—</div>
+      <div class="qz-ph" id="qzPh"></div>
+      <div class="qz-hintrow">
+        <button class="qz-hint-btn" id="qzHintBtn">💡 看提示</button>
+        <span class="qz-hint" id="qzHint"></span>
+      </div>
+      <div class="qz-opts" id="qzOpts"></div>
+    </div>
+    <div class="modal-foot">
+      <span class="qz-prog" id="qzProg"></span>
+      <button class="btn" id="qzSkip">跳过</button>
+      <button class="btn primary" id="qzNext">下一题</button>
+    </div>
+  </div>
+</div>
+
+<!-- 造句练习 -->
+<div class="modal" id="wrModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>造句练习</h3>
+      <button class="icon" id="wrClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="wr-hint">用下面三个词<b>各</b>写一句英文，写完看参考写法，自己对比差在哪</div>
+      <div class="wr-chips" id="wrChips"></div>
+      <textarea id="wrInput" class="wr-input" spellcheck="false"
+        placeholder="在这里写你的句子，一行一句..."></textarea>
+      <div class="wr-ref" id="wrRef"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="wrShuffle">换一组</button>
+      <button class="btn primary" id="wrRefBtn">看参考写法</button>
+    </div>
+  </div>
+</div>
+
+<!-- 手动录入 -->
+<div class="modal" id="adModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>录入生词</h3>
+      <button class="icon" id="adClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="ob-field">
+        <label>单词</label>
+        <div class="ob-pick">
+          <input id="adWord" placeholder="输入英文单词，例如 meticulous">
+          <button class="btn" id="adLookup">查词典</button>
+        </div>
+      </div>
+      <div class="ob-field">
+        <label>音标</label>
+        <input id="adPh" placeholder="点「查词典」自动填">
+      </div>
+      <div class="ob-field">
+        <label>释义</label>
+        <input id="adTr" placeholder="点「查词典」自动填">
+      </div>
+      <div class="ob-field">
+        <label>考点标签</label>
+        <div class="ad-tags" id="adTags"></div>
+      </div>
+      <label class="ad-check">
+        <input type="checkbox" id="adMarked" checked>
+        <span>直接加入我的生词本</span>
+      </label>
+      <div class="ob-result" id="adResult"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="adCancel">取消</button>
+      <button class="btn primary" id="adSave">录入</button>
+    </div>
+  </div>
+</div>
+
+<!-- 练习统计 -->
+<div class="modal" id="stModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>练习记录</h3>
+      <button class="icon" id="stClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="st-cards" id="stCards"></div>
+      <div class="st-sub">分模式正确率</div>
+      <div class="st-modes" id="stModes"></div>
+      <div class="st-sub">错得最多的词 <span class="st-note">点词可加入生词本</span></div>
+      <div class="st-wrong" id="stWrong"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 问 AI -->
+<div class="modal" id="qaModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="qaTitle">问 AI</h3>
+      <button class="icon" id="qaClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="qa-word" id="qaWord"></div>
+      <div class="qa-quick" id="qaQuick"></div>
+      <textarea id="qaInput" class="qa-input" spellcheck="false"
+        placeholder="想问什么？比如：和 XX 有什么区别？作文里怎么用？"></textarea>
+      <div class="qa-answer" id="qaAnswer"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="qaCancel">关闭</button>
+      <button class="btn primary" id="qaSend">提问</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 打包产物
+build/
+dist/
+
+# 用户数据（绝不入库）
+vocab.db
+vocab.db-wal
+vocab.db-shm
+obsidian.json
+data/
+audio_cache/
+
+# 词典源数据：体积大，用 fetch.py 重新生成
+ecdict.csv
+ecdict.db
+lemma.en.txt
+
+# AI 模型：1.1GB
+ai_engine/
+
+# 临时文件
+_*.py
+*.log
+*.tmp
+icon_*.png
+icon_preview.png
+fig_*.png
+popup_*.png
+st_*.png
+memo_*.png
+add_*.png
+opt_*.png
+spk_*.png
